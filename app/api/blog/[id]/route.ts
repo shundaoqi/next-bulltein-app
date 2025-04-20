@@ -25,15 +25,46 @@ export const GET = async (
   }
 };
 
-export const PUT = async (req: Request, res: NextResponse) => {
+//ブログ記事編集用API
+export const PUT = async (
+  req: Request,
+  { params }: { params: Promise<{ id: string }> },
+  res: NextResponse
+) => {
   try {
-    const id: number = parseInt(req.url.split("/blog/")[1]);
+    const id: number = parseInt((await params).id);
+    const { title, description } = await req.json();
     await main();
-    const post = await prisma.post.findFirst({ where: { id } }); //http://localhost:3000/api/blog/3
-    return NextResponse.json({ message: "success", post }, { status: 200 });
+
+    const put = await prisma.post.update({
+      data: { title, description },
+      where: { id },
+    });
+    return NextResponse.json({ message: "success", put }, { status: 200 });
   } catch (err) {
     return NextResponse.json({ message: "Error", err }, { status: 500 });
   } finally {
-    await prisma.$disconnect();
+    await prisma.$disconnect;
+  }
+};
+
+//ブログ記事削除用API
+export const DELETE = async (
+  req: Request,
+  { params }: { params: Promise<{ id: string }> },
+  res: NextResponse
+) => {
+  try {
+    const id: number = parseInt((await params).id);
+    await main();
+
+    const put = await prisma.post.delete({
+      where: { id },
+    });
+    return NextResponse.json({ message: "success", put }, { status: 200 });
+  } catch (err) {
+    return NextResponse.json({ message: "Error", err }, { status: 500 });
+  } finally {
+    await prisma.$disconnect;
   }
 };
