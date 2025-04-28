@@ -1,65 +1,79 @@
-import { PostType } from "@/types";
+"use client";
+
+import supabase from "@/lib/supabase";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
 
-const fectchAllBlogs = async () => {
-  const res = await fetch("http://localhost:3000/api/blog", {
-    cache: "no-store", //SSR
-  });
+const Home = () => {
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const data = await res.json();
-  return data.posts;
-};
-
-export default async function Home() {
-  const posts = await fectchAllBlogs();
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password,
+      });
+      if (signInError) {
+        throw signInError;
+      }
+      await router.push("/blog/all");
+    } catch {
+      alert("Error occured");
+    }
+  };
 
   return (
-    <main className="w-full h-full">
-      <div className="md:w-2/4 sm:w-3/4 m-auto p-4 my-5 rounded-lg bg-blue-900 drop-shadow-xl">
-        <h1 className="text-slate-200 text-center text-2xl font-extrabold">
-          Full Stack Blog 📝
-        </h1>
-      </div>
-      {/* Link */}
-      <div className="flex my-5">
-        <Link
-          href={"/blog/add"}
-          className=" md:w-1/6 sm:w-2/4 text-center rounded-md p-2 m-auto bg-slate-300 font-semibold"
-        >
-          ブログ新規作成
-        </Link>
-      </div>
-
-      <div className="w-full flex flex-col justify-center items-center">
-        {posts.map((post: PostType) => (
-          <div
-            key={post.id}
-            className="w-3/4 p-4 rounded-md mx-3 my-2 bg-slate-300 flex flex-col justify-center"
+    <div className="w-full m-auto flex my-4">
+      <div className="flex flex-col justify-center items-center m-auto">
+        <p className="text-2xl text-slate-700 font-bold p-3">Get Started !!</p>
+        <form onSubmit={onSubmit}>
+          <label>Email</label>
+          <input
+            placeholder="Enter Your Email"
+            type="text"
+            className="rounded-md px-4 w-full py-2 my-2"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <label>Password</label>
+          <input
+            placeholder="Enter Your Password"
+            type="text"
+            className="rounded-md px-4 w-full py-2 my-2"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <button
+            type="submit"
+            className="font-semibold px-4 py-2 shadow-xl bg-slate-200 rounded-lg m-auto hover:bg-slate-100"
           >
-            <div className="flex items-center my-3">
-              <div className="mr-auto">
-                <h2 className="mr-auto font-semibold">{post.title}.</h2>
-              </div>
-              <Link
-                href={`/blog/edit/${post.id}`}
-                className="px-4 py-1 text-center text-xl bg-slate-900 rounded-md font-semibold text-slate-200"
-              >
-                編集
-              </Link>
-            </div>
-
-            <div className="mr-auto my-1">
-              <blockquote className="font-bold text-slate-700">
-                {new Date(post.date).toDateString()}
-              </blockquote>
-            </div>
-
-            <div className="mr-auto my-1">
-              <h2>{post.description}</h2>
-            </div>
+            Login
+          </button>
+          <button
+            type="button"
+            className="font-bold px-4 py-2 bg-blue-200 rounded-lg mx-3 hover:bg-blue-100"
+            onClick={() => {
+              router.push("/auth/signup");
+            }}
+          >
+            Sign Up
+          </button>
+          <div className="px-4 w-full py-2 my-10 text-center">
+            <Link
+              href="/auth/sendemail"
+              className="text-blue-500 underline hover:text-blue-700 transition"
+            >
+              パスワードをお忘れの方はこちら
+            </Link>
           </div>
-        ))}
+        </form>
       </div>
-    </main>
+    </div>
   );
-}
+};
+
+export default Home;
