@@ -11,11 +11,23 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  directUrl         = env("DIRECT_URL")
 }
 
 model Post {
-  id Int @id @default(autoincrement())
-  title String
+  id          String   @id @default(uuid()) @db.Uuid
+  title       String
   description String
-  date DateTime @default(now())
+  date        DateTime @default(now())
+  created_by  String   @db.Uuid
+  createdBy   User     @relation(name: "UserPosts", fields: [created_by], references: [id])
+}
+
+model User {
+  id        String   @id @default(uuid()) @db.Uuid
+  user_name String
+  profile   String
+  posts     Post[]   @relation(name: "UserPosts")
+
+  @@map("users")
 }

@@ -28,8 +28,7 @@ export const GET = async (
 //ブログ記事編集用API
 export const PUT = async (
   req: Request,
-  { params }: { params: Promise<{ id: string }> },
-  res: NextResponse
+  { params }: { params: Promise<{ id: string }> }
 ) => {
   try {
     const id: number = parseInt((await params).id);
@@ -51,8 +50,7 @@ export const PUT = async (
 //ブログ記事削除用API
 export const DELETE = async (
   req: Request,
-  { params }: { params: Promise<{ id: string }> },
-  res: NextResponse
+  { params }: { params: Promise<{ id: string }> }
 ) => {
   try {
     const id: number = parseInt((await params).id);

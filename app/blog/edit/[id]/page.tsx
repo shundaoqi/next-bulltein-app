@@ -73,9 +73,9 @@ const EditPost = ({ params }: { params: Promise<{ id: number }> }) => {
         }
       })
       .catch((err) => {
-        toast.error("エラーが発生しました", { id: "1" });
+        toast.error("エラーが発生しました", err);
       });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

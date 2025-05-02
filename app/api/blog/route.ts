@@ -10,7 +10,7 @@ export const main = async () => {
 };
 
 // ブログ全記事取得用API
-export const GET = async (req: Request, res: NextResponse) => {
+export const GET = async () => {
   try {
     await main();
     const posts = await prisma.post.findMany();
@@ -23,7 +23,7 @@ export const GET = async (req: Request, res: NextResponse) => {
 };
 
 // ブログ投稿用API
-export const POST = async (req: Request, res: NextResponse) => {
+export const POST = async (req: Request) => {
   try {
     const { title, description } = await req.json();
 
