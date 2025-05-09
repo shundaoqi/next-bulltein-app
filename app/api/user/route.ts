@@ -9,7 +9,7 @@ export const main = async () => {
   }
 };
 
-// user情報取得API
+// user情報検索API
 export const GET = async (req: Request) => {
   try {
     await main();

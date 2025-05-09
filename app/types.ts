@@ -3,4 +3,5 @@ export type PostType = {
   title: string;
   description: string;
   date: Date;
+  created_by: string
 };

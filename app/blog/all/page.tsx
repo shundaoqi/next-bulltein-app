@@ -1,8 +1,9 @@
-import { PostType } from "@/types";
+import PostCard from "@/app/component/PostCard";
+import { PostType } from "@/app/types";
 import Link from "next/link";
 import React from "react";
 
-const fectchAllBlogs = async () => {
+const fetchAllBlogs = async () => {
   const res = await fetch("http://localhost:3000/api/blog", {
     cache: "no-store", //SSR
   });
@@ -12,7 +13,7 @@ const fectchAllBlogs = async () => {
 };
 
 const AllBlogs = async () => {
-  const posts = await fectchAllBlogs();
+  const posts = await fetchAllBlogs();
 
   return (
     <main className="w-full h-full">
@@ -33,32 +34,7 @@ const AllBlogs = async () => {
 
       <div className="w-full flex flex-col justify-center items-center">
         {posts.map((post: PostType) => (
-          <div
-            key={post.id}
-            className="w-3/4 p-4 rounded-md mx-3 my-2 bg-slate-300 flex flex-col justify-center"
-          >
-            <div className="flex items-center my-3">
-              <div className="mr-auto">
-                <h2 className="mr-auto font-semibold">{post.title}.</h2>
-              </div>
-              <Link
-                href={`/blog/edit/${post.id}`}
-                className="px-4 py-1 text-center text-xl bg-slate-900 rounded-md font-semibold text-slate-200"
-              >
-                編集
-              </Link>
-            </div>
-
-            <div className="mr-auto my-1">
-              <blockquote className="font-bold text-slate-700">
-                {new Date(post.date).toDateString()}
-              </blockquote>
-            </div>
-
-            <div className="mr-auto my-1">
-              <h2>{post.description}</h2>
-            </div>
-          </div>
+          <PostCard key={post.id} post={post}/>
         ))}
       </div>
     </main>

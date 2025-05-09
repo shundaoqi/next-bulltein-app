@@ -25,10 +25,10 @@ export const GET = async () => {
 // ブログ投稿用API
 export const POST = async (req: Request) => {
   try {
-    const { title, description } = await req.json();
+    const { title, description, created_by } = await req.json();
 
     await main();
-    const post = await prisma.post.create({ data: { title, description } });
+    const post = await prisma.post.create({ data: { title, description, created_by } });
     return NextResponse.json({ message: "success", post }, { status: 201 });
   } catch (err) {
     return NextResponse.json({ message: "Error", err }, { status: 500 });

@@ -1,22 +1,34 @@
 "use client";
 
+import supabase from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import React, { useRef } from "react";
 import toast, { Toaster } from "react-hot-toast";
 
 const postBlog = async (
   title: string | undefined,
-  description: string | undefined
+  description: string | undefined,
+  created_by: string | undefined
 ) => {
   const res = await fetch("http://localhost:3000/api/blog", {
     method: "POST",
-    body: JSON.stringify({ title, description }),
+    body: JSON.stringify({ title, description, created_by }),
     headers: {
       "Content-Type": "application/json",
     },
   });
 
   return res.json();
+};
+
+const getUserId = async () => {
+  const { data, error } = await supabase.auth.getUser();
+  if (error || !data.user) {
+    console.error("users.user_id not found", error?.message);
+    return;
+  } else {
+    return data.user.id;
+  }
 };
 
 const PostBlog = () => {
@@ -27,11 +39,17 @@ const PostBlog = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    const user_id = await getUserId();
+
     toast.loading("投稿中です", { id: "1" });
-    await postBlog(titleRef.current?.value, descriptionRef.current?.value);
+    await postBlog(
+      titleRef.current?.value,
+      descriptionRef.current?.value,
+      user_id
+    );
 
     toast.success("投稿に成功しました！", { id: "1" });
-    router.push("/");
+    router.push("/blog/all");
     router.refresh();
   };
   return (
