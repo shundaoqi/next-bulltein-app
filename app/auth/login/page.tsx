@@ -20,7 +20,7 @@ const Login = () => {
       if (signInError) {
         throw signInError;
       }
-      await router.push("/");
+      await router.push("/blog/all");
     } catch {
       alert("Error occured");
     }
